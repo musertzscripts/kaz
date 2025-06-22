@@ -6,54 +6,54 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "Head Hub",
-   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   Icon = 0, 
    LoadingTitle = "Adding net bypass...",
    LoadingSubtitle = "by kaz",
-   ShowText = "Head Hub", -- for mobile users to unhide rayfield, change if you'd like
-   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+   ShowText = "Head Hub", 
+   Theme = "Default", 
 
-   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+   ToggleUIKeybind = "K", 
 
    DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+   DisableBuildWarnings = false, 
 
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil, 
       FileName = "HeadVisulaizer"
    },
 
    Discord = {
-      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
    },
 
-   KeySystem = true, -- Set this to true to use our key system
+   KeySystem = true,
    KeySettings = {
       Title = "Key",
       Subtitle = "Get the key",
-      Note = "Join out discord server to get key", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"alwaysfreaky"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+      Note = "Join out discord server to get key",
+      FileName = "Key",
+      SaveKey = false,
+      GrabKeyFromSite = false,
+      Key = {"alwaysfreaky"}
    }
 })
 
-local DupeTab = Window:CreateTab("Duper", "chevron-last") -- Title, Image
-local Section = DupeTab:CreateSection("Copy Discord Link")
+local DuplicatorTab = Window:CreateTab("Duper", "chevron-last") 
+local Section = DuplicatorTab:CreateSection("Copy Discord Link")
 
-local Button = DupeTab:CreateButton({
+local Button = DuplicatorTab:CreateButton({
    Name = "Discord",
    Callback = function()
-   setclipboard("gg/niggers")
+      setclipboard("gg/niggers")
    end,
 })
 
-local Section2 = DupeTab:CreateSection("Dupe Head")
+local Section2 = DuplicatorTab:CreateSection("Dupe Head")
 
-DupeTab:CreateInput({
+DuplicatorTab:CreateInput({
     Name = "How many times to clone?",
     PlaceholderText = "Enter number of clones",
     RemoveTextAfterFocusLost = false,
@@ -101,7 +101,7 @@ DupeTab:CreateInput({
     end
 })
 
-local visTab = Window:CreateTab("Visualizer", "activity") -- Title, Image
+local VisualizerTab = Window:CreateTab("Visualizer", "activity")
 
 local player    = game.Players.LocalPlayer
 local char      = player.Character or player.CharacterAdded:Wait()
@@ -202,6 +202,7 @@ patterns.random = function(i, t, n)
 end
 
 local clock = 0
+local RunService = game:GetService("RunService")
 RunService.RenderStepped:Connect(function(dt)
     if not visualizerEnabled then return end
     clock += dt * speed
@@ -215,14 +216,14 @@ RunService.RenderStepped:Connect(function(dt)
     end
 end)
 
-visTab:CreateDropdown({
+VisualizerTab:CreateDropdown({
     Name = "Pattern",
     Options = {"circle","heart","wave","tornado","spiral","square","figure8","sphere","random"},
     CurrentOption = "circle",
     Callback = function(opt) mode = opt end,
 })
 
-vis:CreateButton({
+VisualizerTab:CreateButton({
     Name = "Visualizer (on / off)",
     Callback = function()
         visualizerEnabled = not visualizerEnabled
@@ -234,7 +235,7 @@ vis:CreateButton({
     end
 })
 
-visTab:CreateSlider({
+VisualizerTab:CreateSlider({
     Name = "Tilt",
     Range = {-10, 10},
     Increment = 0.1,
@@ -243,7 +244,7 @@ visTab:CreateSlider({
     Callback = function(v) tilt = v end,
 })
 
-vis:CreateSlider({
+VisualizerTab:CreateSlider({
     Name = "Speed",
     Range = {0.1, 5},
     Increment = 0.1,
@@ -252,7 +253,7 @@ vis:CreateSlider({
     Callback = function(v) speed = v end,
 })
 
-visTab:CreateSlider({
+VisualizerTab:CreateSlider({
     Name = "Sensitivity",
     Range = {1, 20},
     Increment = 1,
@@ -261,7 +262,7 @@ visTab:CreateSlider({
     Callback = function(v) sensitivity = v end,
 })
 
-visTab:CreateButton({
+VisualizerTab:CreateButton({
     Name = "net",
     Callback = function()
         for _, part in ipairs(workspace:GetChildren()) do
@@ -280,6 +281,6 @@ visTab:CreateButton({
     end,
 })
 
-local credsTab = Window:CreateTab("Credits", "brush") -- Title, Image
+local CreditsTab = Window:CreateTab("Credits", "brush")
 
-local Label = credsTab:CreateLabel("made by kaz", "clipboard-pen")
+CreditsTab:CreateLabel("made by kaz", "clipboard-pen")
