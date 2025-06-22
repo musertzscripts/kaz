@@ -4,13 +4,12 @@ local player = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local duplicatedHeads = {}
-local visualizerRunning = false
-local currentVisualizer = "Circle"
+local visualizerConnection
 
--- Create a detached head clone
+-- Duplicate the head
 local function createHead()
-    local character = player.Character or player.CharacterAdded:Wait()
-    local head = character:FindFirstChild("Head")
+    local char = player.Character or player.CharacterAdded:Wait()
+    local head = char:FindFirstChild("Head")
     if not head then return end
 
     local clone = head:Clone()
@@ -22,10 +21,10 @@ local function createHead()
     end
     clone.CFrame = head.CFrame + Vector3.new(0, 3, 0)
     clone.Parent = Workspace
-
     table.insert(duplicatedHeads, clone)
 end
 
+-- Remove all heads
 local function clearHeads()
     for _, head in pairs(duplicatedHeads) do
         if head and head.Parent then head:Destroy() end
@@ -33,8 +32,8 @@ local function clearHeads()
     duplicatedHeads = {}
 end
 
--- Visualizers
-local function visualizerCircle(t)
+-- Visualizer styles
+local function circle(t)
     local center = player.Character.Head.Position
     local radius = 6
     for i, head in ipairs(duplicatedHeads) do
@@ -45,7 +44,7 @@ local function visualizerCircle(t)
     end
 end
 
-local function visualizerHeart(t)
+local function heart(t)
     local center = player.Character.Head.Position
     local scale = 3
     for i, head in ipairs(duplicatedHeads) do
@@ -56,7 +55,7 @@ local function visualizerHeart(t)
     end
 end
 
-local function visualizerWave(t)
+local function wave(t)
     local center = player.Character.Head.Position
     for i, head in ipairs(duplicatedHeads) do
         local offsetX = (i - (#duplicatedHeads / 2)) * 2
@@ -65,7 +64,7 @@ local function visualizerWave(t)
     end
 end
 
-local function visualizerTornado(t)
+local function tornado(t)
     local center = player.Character.Head.Position
     for i, head in ipairs(duplicatedHeads) do
         local angle = t * 4 + i
@@ -76,7 +75,7 @@ local function visualizerTornado(t)
     end
 end
 
-local function visualizerSpiral(t)
+local function spiral(t)
     local center = player.Character.Head.Position
     for i, head in ipairs(duplicatedHeads) do
         local angle = t + i * 0.4
@@ -87,33 +86,21 @@ local function visualizerSpiral(t)
     end
 end
 
--- Run/Stop visualizer
-local function startVisualizer()
-    if visualizerRunning then return end
-    visualizerRunning = true
-    local start = tick()
+-- Visualizer start/stop
+local function startVisualizer(name)
+    if visualizerConnection then visualizerConnection:Disconnect() end
+    if name == "None" then return end
 
-    task.spawn(function()
-        while visualizerRunning do
-            local t = tick() - start
-            if currentVisualizer == "Circle" then
-                visualizerCircle(t)
-            elseif currentVisualizer == "Heart" then
-                visualizerHeart(t)
-            elseif currentVisualizer == "Wave" then
-                visualizerWave(t)
-            elseif currentVisualizer == "Tornado" then
-                visualizerTornado(t)
-            elseif currentVisualizer == "Spiral" then
-                visualizerSpiral(t)
-            end
-            RunService.RenderStepped:Wait()
+    local start = tick()
+    visualizerConnection = RunService.RenderStepped:Connect(function()
+        local t = tick() - start
+        if name == "Circle" then circle(t)
+        elseif name == "Heart" then heart(t)
+        elseif name == "Wave" then wave(t)
+        elseif name == "Tornado" then tornado(t)
+        elseif name == "Spiral" then spiral(t)
         end
     end)
-end
-
-local function stopVisualizer()
-    visualizerRunning = false
 end
 
 -- Rayfield UI
@@ -121,9 +108,7 @@ local Window = Rayfield:CreateWindow({
     Name = "Head Hub",
     LoadingTitle = "Head Hub",
     LoadingSubtitle = "Visualizer + Dupe",
-    ConfigurationSaving = {
-        Enabled = false
-    }
+    ConfigurationSaving = { Enabled = false }
 })
 
 local Tab = Window:CreateTab("Main", 4483362458)
@@ -140,21 +125,9 @@ Tab:CreateButton({
 
 Tab:CreateDropdown({
     Name = "Visualizer Style",
-    Options = {"Circle", "Heart", "Wave", "Tornado", "Spiral"},
-    CurrentOption = "Circle",
-    Callback = function(value)
-        currentVisualizer = value
-    end
-})
-
-Tab:CreateToggle({
-    Name = "Enable Visualizer",
-    CurrentValue = false,
-    Callback = function(value)
-        if value then
-            startVisualizer()
-        else
-            stopVisualizer()
-        end
+    Options = {"None", "Circle", "Heart", "Wave", "Tornado", "Spiral"},
+    CurrentOption = "None",
+    Callback = function(option)
+        startVisualizer(option)
     end
 })
