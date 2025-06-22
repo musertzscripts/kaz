@@ -53,7 +53,7 @@ local Button = DupeTab:CreateButton({
 
 local Section2 = DupeTab:CreateSection("Dupe Head")
 
-Tab:CreateInput({
+DupeTab:CreateInput({
     Name = "How many times to clone?",
     PlaceholderText = "Enter number of clones",
     RemoveTextAfterFocusLost = false,
@@ -101,7 +101,7 @@ Tab:CreateInput({
     end
 })
 
-local vis = Window:CreateTab("Visualizer", "activity") -- Title, Image
+local visTab = Window:CreateTab("Visualizer", "activity") -- Title, Image
 
 local player    = game.Players.LocalPlayer
 local char      = player.Character or player.CharacterAdded:Wait()
@@ -215,7 +215,7 @@ RunService.RenderStepped:Connect(function(dt)
     end
 end)
 
-vis:CreateDropdown({
+visTab:CreateDropdown({
     Name = "Pattern",
     Options = {"circle","heart","wave","tornado","spiral","square","figure8","sphere","random"},
     CurrentOption = "circle",
@@ -234,7 +234,7 @@ vis:CreateButton({
     end
 })
 
-vis:CreateSlider({
+visTab:CreateSlider({
     Name = "Tilt",
     Range = {-10, 10},
     Increment = 0.1,
@@ -252,7 +252,7 @@ vis:CreateSlider({
     Callback = function(v) speed = v end,
 })
 
-vis:CreateSlider({
+visTab:CreateSlider({
     Name = "Sensitivity",
     Range = {1, 20},
     Increment = 1,
@@ -261,7 +261,7 @@ vis:CreateSlider({
     Callback = function(v) sensitivity = v end,
 })
 
-vis:CreateButton({
+visTab:CreateButton({
     Name = "net",
     Callback = function()
         for _, part in ipairs(workspace:GetChildren()) do
@@ -280,6 +280,6 @@ vis:CreateButton({
     end,
 })
 
-local creds = Window:CreateTab("Credits", "brush") -- Title, Image
+local credsTab = Window:CreateTab("Credits", "brush") -- Title, Image
 
-local Label = creds:CreateLabel("made by kaz", "clipboard-pen")
+local Label = credsTab:CreateLabel("made by kaz", "clipboard-pen")
